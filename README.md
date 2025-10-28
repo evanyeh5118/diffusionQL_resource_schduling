@@ -27,8 +27,6 @@ diffusion_resource_schduling_intra_slice/
 │   └── difsched/
 │       ├── agents/
 │       │   ├── DiffusionQL/
-│       │   ├── dql/
-│       │   │   └── Dql_external/
 │       │   ├── drl/
 │       │   └── mdp/
 │       ├── config/
