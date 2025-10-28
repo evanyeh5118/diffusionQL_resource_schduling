@@ -24,14 +24,14 @@ def get_algorithm_config(algorithm_name: str, env):
         "SAC": {
             "class": SAC,
             "params": {
-                "learning_rate": 3e-3,
+                "learning_rate": 5e-4,
                 "buffer_size": 100000,
                 "learning_starts": 1000,
                 "batch_size": 256,
-                "tau": 0.005,
+                "tau": 0.0025,
                 "gamma": 0.99,
-                "train_freq": (100, "step"),
-                "gradient_steps": 100,
+                "train_freq": 1,
+                "gradient_steps": 1,
             },
             "action_space": "continuous",
             "description": "Soft Actor-Critic - off-policy algorithm for continuous control"

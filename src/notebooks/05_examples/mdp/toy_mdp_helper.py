@@ -9,7 +9,13 @@ Author: [Your Name]
 Date: [Current Date]
 """
 
+
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import PowerNorm
+from matplotlib.ticker import MultipleLocator
+from typing import List, Optional, Tuple
+
 import torch
 from typing import Dict, List, Tuple, Optional, Union, Any
 from tqdm import tqdm
@@ -17,8 +23,8 @@ import warnings
 
 # Import local modules
 try:
-    from Agents.ModelBasedSolvers import MdpKernel
-    from Environment.Helpers.TrafficGenerator import generate_next_state
+    from src.difsched.agents.mdp import MdpKernel
+    from src.difsched.env.Helpers.TrafficGenerator import generate_next_state
 except ImportError as e:
     warnings.warn(f"Some dependencies could not be imported: {e}")
 
@@ -401,12 +407,6 @@ def visualize_policy_heatmap(frequency_heatmap: np.ndarray,
         print("matplotlib not available. Printing heat map as text:")
         print(frequency_heatmap)
         print(f"Deterministic policy: {policy_deterministic}")
-
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import PowerNorm
-from matplotlib.ticker import MultipleLocator
-from typing import List, Optional, Tuple
 
 def visualize_policy_heatmap_continuous(
         frequency_heatmaps: List[np.ndarray],
