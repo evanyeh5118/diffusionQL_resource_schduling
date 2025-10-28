@@ -30,8 +30,8 @@ def get_algorithm_config(algorithm_name: str, env):
                 "batch_size": 256,
                 "tau": 0.005,
                 "gamma": 0.99,
-                "train_freq": 1,
-                "gradient_steps": 1,
+                "train_freq": (100, "step"),
+                "gradient_steps": 100,
             },
             "action_space": "continuous",
             "description": "Soft Actor-Critic - off-policy algorithm for continuous control"

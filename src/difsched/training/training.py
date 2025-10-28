@@ -16,6 +16,7 @@ from src.difsched.evaluation import eval
 from src.difsched.agents.DiffusionQL.DQL_Q_esmb import DQL_Q_esmb as Agent
 
 def training(trainingConfig, dataset_off, hyperparams, env, envInterface, save_folder, N_exp_list=[0,1,2]):
+    BC_loss = trainingConfig.get('BC_loss', True)
     iterations = trainingConfig.get('iterations', 100)
     batch_size = trainingConfig.get('batch_size', 100)
     LEN_eval = trainingConfig.get('LEN_eval', 50)
@@ -28,6 +29,8 @@ def training(trainingConfig, dataset_off, hyperparams, env, envInterface, save_f
     min_weight_bc_loss = trainingConfig.get('min_weight_bc_loss', 1.0)
     rb_capacity = trainingConfig.get('rb_capacity', 30000)
 
+    print(max_weight_bc_loss, min_weight_bc_loss)
+
     for N_exp in N_exp_list:
         with open(f"{save_folder}/hyperparams_{N_exp}.pkl", "wb") as f:
             pickle.dump(hyperparams, f)
@@ -35,7 +38,8 @@ def training(trainingConfig, dataset_off, hyperparams, env, envInterface, save_f
         dataSamplerOff = ReplayBuffer(capacity=rb_capacity, envInterface=envInterface, device=hyperparams['device'])
         dataSamplerOn = ReplayBufferHybrid(capacity=rb_capacity, envInterface=envInterface, device=hyperparams['device'])
         dataSamplerOff.add(dataset_off)
-        dataSamplerOn.addOffline(dataset_off)
+        if BC_loss == True:
+            dataSamplerOn.addOffline(dataset_off)
         batch = dataSamplerOff.sample(len(dataSamplerOff))
         print(f"Expert's Reward: {np.mean(batch[2].cpu().detach().numpy())}")
 
@@ -50,7 +54,10 @@ def training(trainingConfig, dataset_off, hyperparams, env, envInterface, save_f
         best_reward = np.inf
         idx_episode = 1
         while(True):
-            metrics = agent.train_split(dataSamplerOff, dataSamplerOn, iterations, batch_size, tqdm_pos=0)
+            if BC_loss == True:
+                metrics = agent.train_split(dataSamplerOff, dataSamplerOn, iterations, batch_size, tqdm_pos=0)
+            else:
+                metrics = agent.train(dataSamplerOn, iterations, batch_size, tqdm_pos=0)
             _, explore_data = eval(agent, env, envInterface, LEN_eval=LEN_eval, obvMode="predicted", 
                                 sample_method="exploration", N_action_candidates=10, 
                                 eta=np.random.uniform(0.5, 3.0), verbose=True)

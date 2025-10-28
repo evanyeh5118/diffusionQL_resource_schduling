@@ -130,7 +130,7 @@ class DQL_Q_esmb():
         #######################
         """ Update Actor """
         #######################
-        loss_pi = L_bc + self.weight_q_loss * L_q + self.weight_entropy_loss * L_e
+        loss_pi = self.weight_bc_loss*L_bc + self.weight_q_loss * L_q + self.weight_entropy_loss * L_e
         self.optimizer_actor.zero_grad()
         loss_pi.backward()
         torch.nn.utils.clip_grad_norm_(self.actor.parameters(), self.grad_clip, norm_type=2)
@@ -205,12 +205,12 @@ class DQL_Q_esmb():
 
     def load_model(self, dir, id=None):
         if id is not None:
-            self.actor.load_state_dict(torch.load(f'{dir}/actor_{id}.pth'))
-            self.critic.load_state_dict(torch.load(f'{dir}/critic_{id}.pth'))
+            self.actor.load_state_dict(torch.load(f'{dir}/actor_{id}.pth', weights_only=True))
+            self.critic.load_state_dict(torch.load(f'{dir}/critic_{id}.pth', weights_only=True))
             self.actor_target.target.load_state_dict(self.actor.state_dict())
             self.critic_target.target.load_state_dict(self.critic.state_dict())
         else:
-            self.actor.load_state_dict(torch.load(f'{dir}/actor.pth'))
-            self.critic.load_state_dict(torch.load(f'{dir}/critic.pth'))
+            self.actor.load_state_dict(torch.load(f'{dir}/actor.pth', weights_only=True))
+            self.critic.load_state_dict(torch.load(f'{dir}/critic.pth', weights_only=True))
             self.actor_target.target.load_state_dict(self.actor.state_dict())
             self.critic_target.target.load_state_dict(self.critic.state_dict())

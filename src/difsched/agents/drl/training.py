@@ -1,17 +1,19 @@
+import os
+import time
+from collections import deque
+
+import numpy as np
 import torch
+
 from stable_baselines3 import PPO, A2C, SAC, TD3, DQN
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.callbacks import BaseCallback, EvalCallback
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.noise import NormalActionNoise
-from stable_baselines3.common.vec_env import DummyVecEnv,SubprocVecEnv
-import time
-import os
-import numpy as np
-from collections import deque
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 
-from Agents.DrlLibs.DRL_EnvSim import DRLResourceSchedulingEnv
-from Agents.DrlLibs.DRL_config import (
+from src.difsched.agents.drl.DRL_EnvSim import DRLResourceSchedulingEnv
+from src.difsched.agents.drl.DRL_config import (
     get_algorithm_config, 
     get_training_config,
     print_algorithm_info
@@ -83,7 +85,8 @@ class TrainingCallback(BaseCallback):
             avg_loss_last_100 = np.mean(self.episode_loss_rates[-100:]) if len(self.episode_loss_rates) >= 100 else None
             
             print(f"\n{'='*80}")
-            print(f"Timestep: {self.num_timesteps} | {len(completed_episodes)} Episode(s) Completed")
+            print(f"Timestep: {self.num_timesteps}")
+            print(f"Episode: {self.episodes_seen}")
             print(f"{'='*80}")
             
             # Print individual environment results

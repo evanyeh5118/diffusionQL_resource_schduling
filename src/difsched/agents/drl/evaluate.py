@@ -2,11 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-from Agents.DrlLibs.DRL_config import (
+from src.difsched.agents.drl.DRL_config import (
     get_algorithm_config, 
     get_training_config,
 )
-from Agents.DrlLibs.training import create_environment
+from src.difsched.agents.drl.training import create_environment
 
 def evaluate_drl_agent(model, env, n_steps, algorithm_name, deterministic=True):    
     mode_str = "Deterministic" if deterministic else "Stochastic (with exploration)"
