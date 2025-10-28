@@ -1,6 +1,30 @@
 # Diffusion-based Resource Scheduling with Offline RL
 
-A comprehensive framework for resource scheduling in wireless networks using diffusion-based offline reinforcement learning techniques.
+A comprehensive research framework for intelligent resource scheduling in wireless networks using diffusion-based offline reinforcement learning techniques.
+
+**Keywords**: Offline Reinforcement Learning, Diffusion Models, Resource Allocation, Wireless Networks, 5G/6G, Network Slicing
+
+| Aspect | Description |
+|--------|-------------|
+| **Problem** | Dynamic resource allocation in wireless network slices with time-varying traffic |
+| **Approach** | Diffusion Q-Learning (DQL) for learning complex action distributions |
+| **Domain** | Next-generation wireless networks (5G/6G) |
+| **Key Innovation** | Combining diffusion models with offline RL for policy learning |
+| **Status** | Active Research Project |
+
+## 📋 Project Summary
+
+This project implements advanced reinforcement learning methods for **intra-slice resource scheduling** in next-generation wireless networks (5G/6G). The framework addresses the critical challenge of efficiently allocating limited bandwidth resources to multiple users with varying traffic patterns and quality-of-service (QoS) requirements.
+
+### Key Innovation
+
+The project introduces **Diffusion Q-Learning (DQL)**, which leverages diffusion models to learn complex action distributions for resource allocation tasks. This approach is particularly effective for offline reinforcement learning scenarios where interactions with the environment are costly or limited.
+
+### Research Focus
+
+- **Problem**: Dynamic resource allocation in wireless slice management with uncertain traffic patterns
+- **Solution**: Diffusion-based policy learning combined with offline RL algorithms
+- **Application**: Ultra-reliable low-latency communications (URLLC) and enhanced mobile broadband (eMBB) services
 
 ## 🎯 Overview
 
@@ -11,6 +35,14 @@ This project implements advanced RL techniques for intra-slice resource scheduli
 - **Training**: Offline reinforcement learning pipeline with behavioral cloning
 - **Evaluation**: Comprehensive evaluation and analysis tools
 - **Data Pipeline**: Automatic traffic dataset generation and processing
+
+### Core Components
+
+1. **Diffusion Q-Learning (DQL)**: Combines diffusion models with Q-learning for complex action distribution learning
+2. **Environment Simulation**: Realistic wireless network with time-varying channel conditions and traffic patterns
+3. **Offline RL Pipeline**: Train policies from fixed datasets without online environment interaction
+4. **Behavioral Cloning**: Leverage expert demonstrations to bootstrap RL policies
+5. **Evaluation Framework**: Comprehensive benchmarks comparing DQL, DRL, and MDP-based approaches
 
 ## ✨ Features
 
@@ -354,29 +386,70 @@ env_config = cfg_mgr.load_env_config('default')
 # Cell 5: Analyze results
 ```
 
+## 🧪 Methodology
+
+### Diffusion Q-Learning (DQL)
+
+The core innovation of this project is combining diffusion models with Q-learning for offline reinforcement learning:
+
+- **Diffusion Policy**: Models action distributions using reverse diffusion processes
+- **Q-Learning**: Learns optimal Q-functions for resource allocation decisions
+- **Offline Learning**: Trains from fixed datasets without environment interaction
+- **IQL Integration**: Uses Implicit Q-Learning for value function estimation
+
+### Key Algorithms
+
+1. **DQL with IQL**: Diffusion Q-Learning with Implicit Q-Learning critic
+2. **Behavioral Cloning**: Initial policy learning from expert demonstrations
+3. **Diffusion Schedule**: Stochastic noise schedule for action generation
+4. **EMA Targets**: Exponential moving average targets for stable training
+
+### Environment Dynamics
+
+- **Wireless Network Simulation**: Realistic channel fading and interference
+- **Traffic Patterns**: Time-varying user demands with prediction
+- **Resource Constraints**: Limited bandwidth with QoS requirements
+- **State Space**: User demands, predicted traffic, channel conditions
+
 ## 🚦 Status
 
 ### Implemented ✅
-- [x] Directory structure
-- [x] Package setup (setup.py)
+- [x] Diffusion Q-Learning algorithm (DQL)
+- [x] Environment simulation with traffic prediction
+- [x] Training pipelines for offline RL
+- [x] Evaluation framework
+- [x] Deep RL (SAC) and MDP baselines
 - [x] Configuration system
-- [x] Notebook organization
-- [x] Documentation
+- [x] Data pipeline for traffic generation
+- [x] Notebook workflow for experiments
 
-### In Progress 🔄
-- [ ] Module migrations from old structure
-- [ ] Unit tests (skipped as requested)
-- [ ] CI/CD pipeline
+### Research Areas 🔬
+- Diffusion-based policy learning for continuous action spaces
+- Offline reinforcement learning from fixed datasets
+- Resource allocation in wireless networks
+- Multi-objective optimization (latency, throughput, reliability)
 
-### TODO 📋
-- [ ] DQL agent implementation
-- [ ] DRL agent implementation
-- [ ] MDP solver implementation
-- [ ] Training pipelines
-- [ ] Evaluation metrics
-- [ ] Visualization tools
+### Recent Improvements 🔄
+- Organized package structure (`src/difsched/`)
+- Centralized configuration (YAML-based)
+- Improved evaluation metrics
+- Better documentation
 
 ## 📚 References
+
+### Academic Papers
+
+**Diffusion Models in RL:**
+- Diffusion Q-Learning for Offline Reinforcement Learning
+- Implicit Q-Learning (IQL) by Kostrikov et al.
+
+**Wireless Resource Allocation:**
+- 5G Network Slicing and Resource Allocation
+- Deep Reinforcement Learning for Wireless Network Management
+
+**Offline RL:**
+- Conservative Q-Learning for Offline RL
+- One-Step Actor-Critic Methods
 
 ### Python Packaging
 - [Python Packaging Guide](https://packaging.python.org/)
@@ -390,17 +463,61 @@ env_config = cfg_mgr.load_env_config('default')
 
 MIT License - See LICENSE file for details
 
-## 👤 Author
+Copyright © 2024-2025 L2S Research Group. All rights reserved.
 
-Your Name <your.email@example.com>
+This software is provided for educational and research purposes. See LICENSE file for full terms and conditions.
+
+## 📚 Citation
+
+If you use this code in your research, please cite:
+
+```bibtex
+@software{diffusion_offrl_2024,
+  title = {Diffusion-based Resource Scheduling with Offline RL},
+  author = {L2S Research Group},
+  year = {2024-2025},
+  url = {https://github.com/yourusername/diffusion-offrl}
+}
+```
+
+## 👤 Authors & Contributors
+
+L2S Research Group
+
+**Primary Contributors:**
+- Resource scheduling algorithms
+- Diffusion-based RL implementation
+- Evaluation framework
+
+For questions or collaborations, please contact: research@l2s.group
 
 ## 🤝 Contributing
 
-Contributions welcome! Please:
-1. Create feature branch
-2. Follow project structure
-3. Update documentation
-4. Submit pull request
+We welcome contributions! This is a research project and contributions can include:
+
+### Types of Contributions
+- **Algorithm improvements**: Better diffusion schedules, training techniques
+- **New environments**: Additional wireless network scenarios
+- **Baselines**: New RL algorithms for comparison
+- **Evaluation metrics**: Additional performance measures
+- **Documentation**: Code comments, tutorials, examples
+- **Bug fixes**: Testing and debugging
+
+### How to Contribute
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Follow the project structure and coding style
+4. Update documentation as needed
+5. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+6. Push to the branch (`git push origin feature/AmazingFeature`)
+7. Open a Pull Request
+
+### Development Guidelines
+- Follow the existing code structure in `src/difsched/`
+- Add docstrings to new functions and classes
+- Update notebooks if applicable
+- Test your changes before submitting
+- Reference relevant papers in code comments
 
 ## 📞 Support
 
