@@ -5,6 +5,7 @@ from .MdpSolverHelper import  _optimize_policy_gradient
 
 class MdpKernel:
     def __init__(self, params=None):
+        self.EnvType = None
         if params is not None:
             self.set_params(params)       
             self.rewardTable = params['rewardTable']
@@ -22,7 +23,8 @@ class MdpKernel:
         self.N_states = params['N_states']
         self.N_actions = params['N_actions']
         self.aggregationMap = params['aggregationMap']
-        self.actionTable = params['actionTable'] 
+        self.actionTable = params['actionTable']
+        self.EnvType = params.get('EnvType', 'SPS') 
 
     def load_policy(self, mdpParams, policyMode='deterministic', randomR=False):
         self.set_params(mdpParams)
@@ -105,15 +107,25 @@ class MdpKernel:
         return sAggregated
 
     def _getAction(self, sAggregated):
-        #--------------compute action--------------
         if self.mode == "deterministic":
             a = self.policy_deter[sAggregated]
         elif self.mode == "stochastic":
             a = np.random.choice(self.N_actions, p=self.policy_stoch[sAggregated])
         else:
             raise ValueError(f"Invalid mode: {self.mode}")
-        r = self.actionTable[a]
-        return np.array(r)
+        
+        action = self.actionTable[a]
+        
+        if self.EnvType == 'SPS':
+            r = np.array(action)
+            return r
+        elif self.EnvType == 'HYBRID':
+            w, M, kappa = action
+            w = np.array(w)
+            r = np.floor(kappa * self.B) / (np.sum(w) + 1e-10) * w
+            return w, r, M, kappa
+        else:
+            raise ValueError(f"Invalid EnvType: {self.EnvType}")
     
     def _getReward(self, s: int, a: int):
         """Return *expected* immediate reward ``R(s,a)``."""

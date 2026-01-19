@@ -57,7 +57,7 @@ class WirelessAnalyticalModel:
         self.params["slot_length"] = 0.001          # 1 ms
         self.params["K"] = self.params["packet_size_bits"] / (self.params["PRBsize"]* self.params["slot_length"])  # Transmission efficiency factor
         self.params["a"] = 0.5
-        self.params["E_max"] = 6      # dB
+        self.params["E_max"] = 8      # dB
         self.params["E_min"] = 0.01  # dB
         self.params["lambda_"] = 1 / 2  # Parameter of the fast fading exponential distribution
 
