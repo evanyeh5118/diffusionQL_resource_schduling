@@ -1,4 +1,4 @@
-from src.difsched.env.RewardFuntions import RewardKernel
+from src.difsched.env.SPS.RewardFuntions import RewardKernel
 
 import numpy as np
 

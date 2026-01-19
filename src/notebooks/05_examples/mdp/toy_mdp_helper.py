@@ -24,7 +24,7 @@ import warnings
 # Import local modules
 try:
     from src.difsched.agents.mdp import MdpKernel
-    from src.difsched.env.Helpers.TrafficGenerator import generate_next_state
+    from src.difsched.env.SPS.Helpers.TrafficGenerator import generate_next_state
 except ImportError as e:
     warnings.warn(f"Some dependencies could not be imported: {e}")
 
