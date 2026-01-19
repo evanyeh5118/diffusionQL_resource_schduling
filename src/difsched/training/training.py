@@ -10,7 +10,7 @@ from src.difsched.config import getExpConfig, visualizeExpConfig
 from src.difsched.config import getEnvConfig, visualizeEnvConfig, getDatasetConfig, visualizeDatasetConfig
 from src.difsched.utils.DataSampler import ReplayBuffer, ReplayBufferHybrid
 from src.difsched.utils.Visualization import MultiLivePlot
-from src.difsched.env.SPS.EnvironmentSim import createEnv
+from src.difsched.env.Hybrid import createEnv
 from src.difsched.utils.EnvInterface import EnvInterface
 from src.difsched.evaluation import eval
 from src.difsched.agents.DiffusionQL.DQL_Q_esmb import DQL_Q_esmb as Agent

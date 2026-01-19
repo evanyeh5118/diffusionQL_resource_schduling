@@ -138,7 +138,14 @@ def create_parallel_environment(simParams, simEnv, obvMode="perfect",
         # Multiple parallel environments
         env_fns = [make_env(simParams, simEnv, obvMode, timesteps_per_episode, i) 
                    for i in range(n_envs)]
-        return SubprocVecEnv(env_fns)
+        
+        # Use DummyVecEnv on Windows to avoid pickle issues with SubprocVecEnv
+        import platform
+        if platform.system() == 'Windows':
+            print("Using DummyVecEnv on Windows (single-process parallelism)")
+            return DummyVecEnv(env_fns)
+        else:
+            return SubprocVecEnv(env_fns)
 
 def train_drl_agent(algorithm_name: str, 
                     env, total_timesteps, save_path, agentName,

@@ -26,7 +26,6 @@ class DRLResourceSchedulingEnv(gym.Env):
         self.len_window = simParams['LEN_window']
         self.r_bar = simParams['r_bar']
         self.bandwidth = simParams['B'] # bandwidth
-        self.M_max = 10
         self.obvMode = obvMode
         self.max_episode_steps = max_episode_steps
                 
@@ -46,8 +45,7 @@ class DRLResourceSchedulingEnv(gym.Env):
     def _setup_action_space(self):
         """Setup the action space based on action_mode."""
         # Symmetric normalized action space [-1, 1] for all actions
-        # action = [w, r, M, alpha] -> (self.n_users + self.n_users + 1 + 1
-        action_dim = 2*self.n_users + 2  # [r]
+        action_dim = self.n_users  # [r]
         self.action_space = spaces.Box(
             low=-1.0,
             high=1.0,
@@ -69,28 +67,13 @@ class DRLResourceSchedulingEnv(gym.Env):
     def _from_dl_action_to_env_action(self, action) -> Tuple[np.ndarray, np.ndarray, int, float]:
         """Convert RL action to policy parameters (w, r, M, alpha)."""
         # Convert normalized [-1, 1] actions to actual values
-        w_dl = action[0:self.n_users]
-        r_dl = action[self.n_users:2*self.n_users]
-        M_dl = action[2*self.n_users]
-        alpha_dl = action[2*self.n_users + 1]
+        r_normalized = action
         
-        # convert w from [-1, 1] to [0, 1] 
-        w = (w_dl > 0.0).astype(int)
-
         # Convert r from [-1, 1] to [0, bandwidth]
-        r = (r_dl + 1.0) / 2.0 * self.bandwidth  # [0, bandwidth]
-        r = np.clip(r, 0, self.bandwidth)
-
-        # Convert M from [-1, 1] to [1, len(M_list)]
-        M = (M_dl + 1.0) / 2.0 * (self.M_max - 1) + 1  # [1, len(M_list)]
-        M = np.clip(M, 1, self.M_max)
-        M = int(M)
-
-        # Convert alpha from [-1, 1] to [0, 1]
-        alpha = (alpha_dl + 1.0) / 2.0  # [0, 1]
-        alpha = np.clip(alpha, 0, 1)
+        r_raw = (r_normalized + 1.0) / 2.0 * self.bandwidth  # [0, bandwidth]
+        r = np.clip(r_raw, 0, self.bandwidth)
         
-        return w, r, M, alpha
+        return r
     
     def observe(self):
         self.u, self.u_predicted = self.simEnv.getStates()
@@ -105,8 +88,8 @@ class DRLResourceSchedulingEnv(gym.Env):
     def step(self, action) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
         """Execute one step in the environment with realistic temporal constraints."""
         # ================== Update the Simulation Environment ==================
-        (w, r, M, alpha) = self._from_dl_action_to_env_action(action)
-        reward = 1-self.simEnv.applyActions(w, r, M, alpha)
+        r = self._from_dl_action_to_env_action(action)
+        reward = 1-self.simEnv.applyActions(r)
         obs = self.observe() #only for recording
         self.simEnv.updateStates()
         #==========================================================================
@@ -118,10 +101,7 @@ class DRLResourceSchedulingEnv(gym.Env):
         truncated = False
         # Create info dict with temporal information
         info = {
-            'w': w.copy(),
             'r': r.copy(),
-            'M': M,
-            'alpha': alpha,
             'total_resource_allocation': np.sum(r),
             'episode_length': self.current_step,
             'total_packet_loss_rate': self.simEnv.getPacketLossRate(),

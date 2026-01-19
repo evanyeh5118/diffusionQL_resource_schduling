@@ -88,13 +88,14 @@ class EnvInterface:
         self.base_state = base_state
         self.n_bits_action = n_bits_action
         self.base_action = base_action
+        self.M_max = 10
 
         if self.discrete_state is False:
             self.state_dim = self.n_users # [u_i | i=0,1,...,N-1]
-            self.action_dim = self.n_users # [r_i | i=0,1,...,N-1]
+            self.action_dim = 2*self.n_users + 2 # [w_i | i=0,1,...,N-1], [r_i | i=0,1,...,N-1], [M], [alpha]
         else:
             self.state_dim = self.n_users * self.n_bits_state
-            self.action_dim =  self.n_users * self.n_bits_action # [r_i | i=0,1,...,N-1]
+            self.action_dim =  2*self.n_users + 2*self.n_bits_action + 2 # [w_i | i=0,1,...,N-1], [r_i | i=0,1,...,N-1], [M], [alpha]
 
         (self.mi_r, self.ma_r) = (0.0, self.bandwidth)
 
@@ -104,13 +105,29 @@ class EnvInterface:
     def _from_agent_action_to_env_action(self, action):
         # Convert normalized [-1, 1] actions to actual values
         action = np.clip(action, -1, 1)
-        r_norm = action
-        r = denormalize(r_norm, self.mi_r, self.ma_r)
-        return r
+        w_agent = action[0:self.n_users]
+        r_agent = action[self.n_users:2*self.n_users]
+        M_agent = action[2*self.n_users]
+        alpha_agent = action[2*self.n_users + 1]
+        w = (w_agent > 0.0).astype(int)
+        r = (r_agent + 1.0) / 2.0 * self.bandwidth  # [0, bandwidth]
+        r = np.clip(r, 0, self.bandwidth)
+        M = (M_agent + 1.0) / 2.0 * (self.M_max - 1) + 1  # [1, len(M_list)]
+        M = np.clip(M, 1, self.M_max)
+        alpha = (alpha_agent + 1.0) / 2.0  # [0, 1]
+        alpha = np.clip(alpha, 0, 1)
+        return w, r, M, alpha
     
     def _from_env_action_to_agent_action(self, action):
-        r_norm = normalize(action, self.mi_r, self.ma_r)
-        return r_norm
+        (w_env, r_env, M_env, alpha_env) = action
+        
+        w_agent = w_env * 2.0 - 1.0  # [0, 1] -> [-1, 1]
+        r_agent = r_env / self.bandwidth * 2.0 - 1.0  # [0, bandwidth] -> [-1, 1]
+        M_agent = (M_env - 1) / (self.M_max - 1) * 2.0 - 1.0  # [1, M_max] -> [-1, 1]
+        alpha_agent = alpha_env * 2.0 - 1.0  # [0, 1] -> [-1, 1]
+        
+        agent_action = np.concatenate([w_agent, r_agent, [M_agent], [alpha_agent]])
+        return agent_action
 
     def preprocess_action(self, action):
         a = self._from_env_action_to_agent_action(action)

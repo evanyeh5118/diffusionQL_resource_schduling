@@ -41,11 +41,11 @@ def _step(
             N=N_action_candidates, 
             eta = eta,
         ).cpu().detach().numpy()[0]
-    r = envInterface.postprocess_action(a)
-    reward = env.applyActions(r)
+    w, r, M, alpha = envInterface.postprocess_action(a)
+    reward = env.applyActions(w, r, M, alpha)
     u_next = _observation_helper(env, obvMode)
     env.updateStates()
-    return u, r, reward, u_next
+    return u, (w, r, M, alpha), reward, u_next
 
 def eval(
         agent,
@@ -64,12 +64,12 @@ def eval(
     env.selectMode(mode=mode, type=type)
     info = {'observations': [], 'actions': [], 'rewards': [], 'next_observations': []}
     for window in tqdm(range(LEN_eval), desc="Evaluation windows", leave=False, disable=not verbose):
-        u, action, reward, u_next = _step(
+        u, (w, r, M, alpha), reward, u_next = _step(
             agent, env, envInterface, obvMode, sample_method, N_action_candidates, eta
         )
         #============ Record Results ============
         info['observations'].append(u)
-        info['actions'].append(action)
+        info['actions'].append((w, r, M, alpha))
         info['rewards'].append(reward)
         info['next_observations'].append(u_next)
     reward = np.mean(info['rewards'])

@@ -123,7 +123,7 @@ def collisionCheck(active_idx, W, M, epsilon):
     rb_usage = np.zeros((W, ))          # how many users pick each RB
     user_rbs = {}               # mapping user -> list of RBs
     for u in active_idx:
-        rbs = random.sample(range(W), min(M, W))
+        rbs = random.sample(range(W), int(min(M, W)))
         user_rbs[u] = rbs
         for rb in rbs:
             rb_usage[rb] += 1
