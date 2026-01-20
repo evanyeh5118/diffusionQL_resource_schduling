@@ -3,7 +3,7 @@ def getSubAgentConfig(configIdx):
         return {
             'EnvType': 'HYBRID',
             'N_user': 4,
-            'LEN_window': 200,
+            'LEN_window': 20,
             'dataflow': 'thumb_fr',
             'N_aggregation': 4,
             'sigma_list': [0.9], # channel quality
@@ -11,14 +11,14 @@ def getSubAgentConfig(configIdx):
             'kappa_range': (0.0, 1.0),
             'M_list': [4, 5, 6],
             'r_bar': 4,
-            'B': 20,
+            'B': 50,
             'randomSeed': 999,
         }
     elif configIdx == 1:
         return {
             'EnvType': 'HYBRID',
             'N_user': 4,
-            'LEN_window': 200,
+            'LEN_window': 20,
             'dataflow': 'thumb_fr',
             'N_aggregation': 4,
             'sigma_list': [0.8], # channel quality
@@ -26,14 +26,14 @@ def getSubAgentConfig(configIdx):
             'kappa_range': (0.0, 1.0),
             'M_list': [4, 5, 6],
             'r_bar': 4,
-            'B': 20,
+            'B': 50,
             'randomSeed': 999,
         }
     elif configIdx == 2:
         return {
             'EnvType': 'HYBRID',
             'N_user': 4,
-            'LEN_window': 200,
+            'LEN_window': 20,
             'dataflow': 'thumb_fr',
             'N_aggregation': 4,
             'sigma_list': [0.7], # channel quality
@@ -41,7 +41,7 @@ def getSubAgentConfig(configIdx):
             'kappa_range': (0.0, 1.0),
             'M_list': [4, 5, 6],
             'r_bar': 4,
-            'B': 20,
+            'B': 50,
             'randomSeed': 999,
         }
     else:

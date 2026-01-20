@@ -3,12 +3,12 @@ def getExpConfig(configIdx):
         return {
             'EnvType': 'HYBRID',
             'N_user': 8,
-            'LEN_window': 200,
+            'LEN_window': 20,
             'N_aggregation': 4,
             'dataflow': 'thumb_fr',
             'randomSeed': 999,
             'r_bar': 4,
-            'B': 40,
+            'B': 100,
             'sigma_list': [0.7, 0.75, 0.8, 0.85, 0.9],
             'offline_dataset_idxs': [0,1,2],
         }

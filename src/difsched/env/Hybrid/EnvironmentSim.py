@@ -23,8 +23,8 @@ def createEnv(envParams, trafficDataParentPath):
         testData = pickle.load(f)
     trafficGenerator = TrafficGenerator(envParams)
     trafficGenerator.registerDataset(
-        np.array(trainData['actual']).astype(int), np.array(testData['predicted']).astype(int),
-        np.array(trainData['actual']).astype(int), np.array(testData['predicted']).astype(int)
+        np.array(trainData['actual']).astype(int), np.array(testData['actual']).astype(int),
+        np.array(trainData['predicted']).astype(int), np.array(testData['predicted']).astype(int)
     )
     simEnv = Environment(envParams, trafficGenerator)
     simEnv.selectMode(mode="train", type="data")

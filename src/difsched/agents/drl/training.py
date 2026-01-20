@@ -12,7 +12,7 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.noise import NormalActionNoise
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 
-from src.difsched.agents.drl.DRL_EnvSim import DRLResourceSchedulingEnv
+from src.difsched.agents.gym_env import HybridEnv
 from src.difsched.agents.drl.DRL_config import (
     get_algorithm_config, 
     get_training_config,
@@ -108,7 +108,7 @@ class TrainingCallback(BaseCallback):
 def create_environment(simParams, simEnv, obvMode="perfect", num_episodes=5000):
     """Create and return the resource scheduling environment."""
      
-    env = DRLResourceSchedulingEnv(
+    env = HybridEnv(
         simParams,
         simEnv,
         obvMode,
@@ -119,7 +119,7 @@ def create_environment(simParams, simEnv, obvMode="perfect", num_episodes=5000):
 def make_env(simParams, simEnv, obvMode, timesteps_per_episode, rank=0):
     """Create a single environment instance."""
     def _init():
-        env = DRLResourceSchedulingEnv(
+        env = HybridEnv(
             simParams,
             simEnv,
             obvMode,
