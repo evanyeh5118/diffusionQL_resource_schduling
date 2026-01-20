@@ -80,10 +80,21 @@ def train_bc(dataset, device: str = "cpu:0",  n_steps=5000, n_steps_per_epoch=10
     return bc
 
 
-def train_iql(dataset, env: gym.Env, device: str = "cpu:0"):
+def train_iql(dataset, device: str = "cpu:0", n_steps=500_000, n_steps_per_epoch=10_000, show_progress=True):
     # IQL in d3rlpy is documented as an offline algorithm (commonly used for continuous control). :contentReference[oaicite:4]{index=4}
-
     iql = d3rlpy.algos.IQLConfig().create(device=device)
-    iql.fit(dataset, n_steps=500_000, n_steps_per_epoch=10_000, show_progress=True)
+    iql.fit(dataset, n_steps=n_steps, n_steps_per_epoch=n_steps_per_epoch, show_progress=show_progress)
     return iql
 
+def train_td3bc(dataset, device: str = "cpu:0", n_steps=500_000, n_steps_per_epoch=10_000, show_progress=True):
+    # TD3+BC (a.k.a. TD3PlusBC) is an offline algorithm for continuous control.
+    td3bc = d3rlpy.algos.TD3PlusBCConfig().create(device=device)
+    td3bc.fit(dataset, n_steps=n_steps, n_steps_per_epoch=n_steps_per_epoch, show_progress=show_progress)
+    return td3bc
+
+
+def train_cql(dataset, device: str = "cpu:0", n_steps=500_000, n_steps_per_epoch=10_000, show_progress=True):
+    # CQL is an offline algorithm that supports continuous control via CQLConfig.
+    cql = d3rlpy.algos.CQLConfig().create(device=device)
+    cql.fit(dataset, n_steps=n_steps, n_steps_per_epoch=n_steps_per_epoch, show_progress=show_progress)
+    return cql

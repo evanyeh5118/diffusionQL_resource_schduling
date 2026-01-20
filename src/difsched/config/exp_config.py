@@ -12,6 +12,19 @@ def getExpConfig(configIdx):
             'sigma_list': [0.7, 0.75, 0.8, 0.85, 0.9],
             'offline_dataset_idxs': [0,1,2],
         }
+    elif configIdx == 1:
+        return {
+            'EnvType': 'HYBRID',
+            'N_user': 12,
+            'LEN_window': 20,
+            'N_aggregation': 4,
+            'dataflow': 'thumb_fr',
+            'randomSeed': 999,
+            'r_bar': 4,
+            'B': 100,
+            'sigma_list': [0.7, 0.75, 0.8, 0.85, 0.9],
+            'offline_dataset_idxs': [0,1,2],
+        }
     else:
         raise ValueError(f"Invalid configIdx: {configIdx}")
 

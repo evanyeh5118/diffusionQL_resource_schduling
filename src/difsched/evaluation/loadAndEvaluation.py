@@ -33,19 +33,22 @@ def loadAndEvaluation(env, envInterface, dataset_expert, modelFolder, exp_idx_li
             action_dim=envInterface.action_dim, 
             **hyperparams
         )
+        print(f"Loading model {exp_idx}_best")
         agent.load_model(modelFolder, f'{exp_idx}_best')
         agent_list.append(agent)
+        
         env.reset()
         env.selectMode(mode="test", type="data")
         reward, _ = eval(
             agent, env, envInterface, 
             LEN_eval=250, obvMode="predicted", sample_method="greedy", 
-            N_action_candidates=50, eta=0.1, verbose=True) 
+            N_action_candidates=50, eta=1.0, verbose=True) 
         print(f"reward_diffusionQ{exp_idx}: {reward}")
         if reward < best_reward:
             best_reward = np.mean(reward)
             best_model_idx = exp_idx
 
+    '''
     print(f"best_exp_idx: {best_model_idx}")
     agent = agent_list[best_model_idx]
 
@@ -81,3 +84,4 @@ def loadAndEvaluation(env, envInterface, dataset_expert, modelFolder, exp_idx_li
     print(f"Expert Reward: {mean_exp:.6f} ± {bound_exp:.6f}")
     print(f"DQL Reward (low eta): {mean_dql_low_eta:.6f} ± {bound_dql_low_eta:.6f}")
     print(f"DQL Reward (high eta): {mean_dql_high_eta:.6f} ± {bound_dql_high_eta:.6f}")
+    '''

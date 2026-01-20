@@ -17,7 +17,7 @@ from src.difsched.agents.DiffusionQL.DQL_Q_esmb import DQL_Q_esmb as Agent
 #from src.difsched.agents.DiffusionQL.DQL_Q_esmb_fast import DQL_Q_esmb_fast as Agent
 
 def training(trainingConfig, dataset_off, hyperparams, env, envInterface, save_folder, N_exp_list=[0,1,2]):
-    BC_loss = trainingConfig.get('BC_loss', True)
+    training_type = trainingConfig.get('training_type', 'hybrid') # hybrid, online, offline
     iterations = trainingConfig.get('iterations', 100)
     batch_size = trainingConfig.get('batch_size', 100)
     LEN_eval = trainingConfig.get('LEN_eval', 50)
@@ -39,12 +39,15 @@ def training(trainingConfig, dataset_off, hyperparams, env, envInterface, save_f
         dataSamplerOff = ReplayBuffer(capacity=rb_capacity, envInterface=envInterface, device=hyperparams['device'])
         dataSamplerOn = ReplayBufferHybrid(capacity=rb_capacity, envInterface=envInterface, device=hyperparams['device'])
         dataSamplerOff.add(dataset_off)
-        if BC_loss == True:
+        if training_type in ['hybrid', 'online']:
             dataSamplerOn.addOffline(dataset_off)
+        
+        '''
         batch = dataSamplerOff.sample(len(dataSamplerOff))
         print(f"Expert's Reward: {np.mean(batch[2].cpu().detach().numpy())}")
-
         print(f"state_dim: {envInterface.state_dim}, action_dim: {envInterface.action_dim}")
+        '''
+        
         agent = Agent(
             state_dim=envInterface.state_dim, 
             action_dim=envInterface.action_dim, 
@@ -55,22 +58,36 @@ def training(trainingConfig, dataset_off, hyperparams, env, envInterface, save_f
         best_reward = np.inf
         idx_episode = 1
         while(True):
-            if BC_loss == True:
-                metrics = agent.train_split(dataSamplerOff, dataSamplerOn, iterations, batch_size, tqdm_pos=0)
-            else:
-                metrics = agent.train(dataSamplerOn, iterations, batch_size, tqdm_pos=0)
-            _, explore_data = eval(agent, env, envInterface, LEN_eval=LEN_eval, obvMode="predicted", 
-                                sample_method="exploration", N_action_candidates=10, 
-                                eta=np.random.uniform(0.5, 3.0), verbose=True)
-            dataSamplerOn.addOnline(explore_data)
-            reward, offpolicy_data = eval(agent, env, envInterface, LEN_eval=LEN_eval, obvMode="predicted", 
-                                        sample_method="greedy", N_action_candidates=50, eta=1.0, verbose=True)
-            dataSamplerOn.addOnline(offpolicy_data)
+            env.reset()
+            env.selectMode(mode="train", type="data")
+            #============= Train ==============
+            if training_type in ['hybrid', 'online']:
+                if training_type == 'hybrid':
+                    metrics = agent.train_split(dataSamplerOff, dataSamplerOn, iterations, batch_size, tqdm_pos=0)
+                else:
+                    metrics = agent.train(dataSamplerOn, iterations, batch_size, tqdm_pos=0)
+                _, explore_data = eval(agent, env, envInterface, LEN_eval=LEN_eval, obvMode="predicted", 
+                    sample_method="exploration", N_action_candidates=10, 
+                    eta=np.random.uniform(0.5, 3.0), verbose=True)
+                dataSamplerOn.addOnline(explore_data)
+            elif training_type == 'offline':
+                metrics = agent.train(dataSamplerOff, iterations, batch_size, tqdm_pos=0)
+            
+            #============= Evaluate ==============
+            env.reset()
+            env.selectMode(mode="test", type="data")
+            reward, _ = eval(agent, env, envInterface, LEN_eval=LEN_eval, obvMode="predicted", 
+                            sample_method="greedy", N_action_candidates=50, eta=1.0, verbose=True)
+            #dataSamplerOn.addOnline(offpolicy_data)
+
+            #============= Update parameters ==============
             sample_ratio = np.max([min_sp_ratio, max_sp_ratio - ((max_sp_ratio-min_sp_ratio)/warm_up_period) * idx_episode])
             dataSamplerOn.set_sample_ratio(sample_ratio)
             weight_bc_loss = np.max([min_weight_bc_loss, max_weight_bc_loss - ((max_weight_bc_loss-min_weight_bc_loss)/warm_up_period) * idx_episode])
-            agent.set_weight_bc_loss(weight_bc_loss)
+            if training_type in ['hybrid', 'online']:
+                agent.set_weight_bc_loss(weight_bc_loss)
 
+            #============= Update metrics ==============
             metrics_train['Ld'] += metrics['Ld']
             metrics_train['Lq'] += metrics['Lq']
             metrics_train['Le'] += metrics['Le']

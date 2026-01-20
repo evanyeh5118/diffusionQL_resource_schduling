@@ -199,18 +199,22 @@ class DQL_Q_esmb():
         if id is not None:
             torch.save(self.actor.state_dict(), f'{dir}/actor_{id}.pth')
             torch.save(self.critic.state_dict(), f'{dir}/critic_{id}.pth')
+            torch.save(self.actor_target.target.state_dict(), f'{dir}/actor_target_{id}.pth')
+            torch.save(self.critic_target.target.state_dict(), f'{dir}/critic_target_{id}.pth')
         else:   
             torch.save(self.actor.state_dict(), f'{dir}/actor.pth')
             torch.save(self.critic.state_dict(), f'{dir}/critic.pth')
+            torch.save(self.actor_target.target.state_dict(), f'{dir}/actor_target.pth')
+            torch.save(self.critic_target.target.state_dict(), f'{dir}/critic_target.pth')
 
     def load_model(self, dir, id=None):
         if id is not None:
             self.actor.load_state_dict(torch.load(f'{dir}/actor_{id}.pth', weights_only=True))
             self.critic.load_state_dict(torch.load(f'{dir}/critic_{id}.pth', weights_only=True))
-            self.actor_target.target.load_state_dict(self.actor.state_dict())
-            self.critic_target.target.load_state_dict(self.critic.state_dict())
+            self.actor_target.target.load_state_dict(torch.load(f'{dir}/actor_target_{id}.pth', weights_only=True))
+            self.critic_target.target.load_state_dict(torch.load(f'{dir}/critic_target_{id}.pth', weights_only=True))
         else:
             self.actor.load_state_dict(torch.load(f'{dir}/actor.pth', weights_only=True))
             self.critic.load_state_dict(torch.load(f'{dir}/critic.pth', weights_only=True))
-            self.actor_target.target.load_state_dict(self.actor.state_dict())
-            self.critic_target.target.load_state_dict(self.critic.state_dict())
+            self.actor_target.target.load_state_dict(torch.load(f'{dir}/actor_target.pth', weights_only=True))
+            self.critic_target.target.load_state_dict(torch.load(f'{dir}/critic_target.pth', weights_only=True))
