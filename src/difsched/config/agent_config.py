@@ -11,7 +11,7 @@ def getSubAgentConfig(configIdx):
             'kappa_range': (0.0, 1.0),
             'M_list': [4, 5, 6],
             'r_bar': 4,
-            'B': 60,
+            'B': 20,
             'randomSeed': 999,
         }
     elif configIdx == 1:
@@ -21,12 +21,12 @@ def getSubAgentConfig(configIdx):
             'LEN_window': 200,
             'dataflow': 'thumb_fr',
             'N_aggregation': 4,
-            'sigma_list': [0.5], # channel quality
+            'sigma_list': [0.8], # channel quality
             'N_kappa': 10,
             'kappa_range': (0.0, 1.0),
             'M_list': [4, 5, 6],
             'r_bar': 4,
-            'B': 60,
+            'B': 20,
             'randomSeed': 999,
         }
     elif configIdx == 2:
@@ -36,12 +36,12 @@ def getSubAgentConfig(configIdx):
             'LEN_window': 200,
             'dataflow': 'thumb_fr',
             'N_aggregation': 4,
-            'sigma_list': [0.1], # channel quality
+            'sigma_list': [0.7], # channel quality
             'N_kappa': 10,
             'kappa_range': (0.0, 1.0),
             'M_list': [4, 5, 6],
             'r_bar': 4,
-            'B': 60,
+            'B': 20,
             'randomSeed': 999,
         }
     else:

@@ -6,14 +6,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
-from src.difsched.config import getExpConfig, visualizeExpConfig
-from src.difsched.config import getEnvConfig, visualizeEnvConfig, getDatasetConfig, visualizeDatasetConfig
+#from src.difsched.config import getExpConfig, visualizeExpConfig
+#from src.difsched.config import getEnvConfig, visualizeEnvConfig, getDatasetConfig, visualizeDatasetConfig
+#from src.difsched.env.Hybrid import createEnv
+#from src.difsched.utils.EnvInterface import EnvInterface
 from src.difsched.utils.DataSampler import ReplayBuffer, ReplayBufferHybrid
 from src.difsched.utils.Visualization import MultiLivePlot
-from src.difsched.env.Hybrid import createEnv
-from src.difsched.utils.EnvInterface import EnvInterface
 from src.difsched.evaluation import eval
 from src.difsched.agents.DiffusionQL.DQL_Q_esmb import DQL_Q_esmb as Agent
+#from src.difsched.agents.DiffusionQL.DQL_Q_esmb_fast import DQL_Q_esmb_fast as Agent
 
 def training(trainingConfig, dataset_off, hyperparams, env, envInterface, save_folder, N_exp_list=[0,1,2]):
     BC_loss = trainingConfig.get('BC_loss', True)

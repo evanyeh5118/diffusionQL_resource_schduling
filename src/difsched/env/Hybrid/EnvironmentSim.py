@@ -1,16 +1,30 @@
 import pickle
 import random
+import numpy as np
 
 from .Helpers.Simulators import SimulatorType1, SimulatorType2
 from .Helpers.TrafficGenerator import TrafficGenerator
 
 def createEnv(envParams, trafficDataParentPath):    
+    '''
     with open(f'{trafficDataParentPath}/trafficData_{envParams["dataflow"]}_LenWindow{envParams["LEN_window"]}.pkl', 'rb') as f:
         trafficData = pickle.load(f)
     trafficGenerator = TrafficGenerator(envParams)
     trafficGenerator.registerDataset(
         trafficData['trafficSource_train_actual'], trafficData['trafficSource_test_actual'],
         trafficData['trafficTarget_train_predicted'], trafficData['trafficTarget_test_predicted']
+    )
+    '''
+    #with open(f'{trafficDataParentPath}/trafficData_{envParams["dataflow"]}_LenWindow{envParams["LEN_window"]}.pkl', 'rb') as f:
+    #    trafficData = pickle.load(f)
+    with open(f'{trafficDataParentPath}/combined_flows_forward_1ms_20_train_predictions.pkl', 'rb') as f:
+        trainData = pickle.load(f)
+    with open(f'{trafficDataParentPath}/combined_flows_forward_1ms_20_test_predictions.pkl', 'rb') as f:
+        testData = pickle.load(f)
+    trafficGenerator = TrafficGenerator(envParams)
+    trafficGenerator.registerDataset(
+        np.array(trainData['actual']).astype(int), np.array(testData['predicted']).astype(int),
+        np.array(trainData['actual']).astype(int), np.array(testData['predicted']).astype(int)
     )
     simEnv = Environment(envParams, trafficGenerator)
     simEnv.selectMode(mode="train", type="data")
