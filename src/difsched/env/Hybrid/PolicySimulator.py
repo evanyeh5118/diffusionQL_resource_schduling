@@ -63,14 +63,16 @@ class PolicySimulator:
             raise ValueError(f"Invalid observation mode: {self.obvMode}")
     
     def _merge_actions(self, u):
-        w, r, M, alpha = np.zeros(self.N_user), np.zeros(self.N_user), 0, 0
+        M_list = []
+        alpha_list = []
+        w, r = np.zeros(self.N_user), np.zeros(self.N_user)
         for i, policy in enumerate(self.policies):
             (_w, _r, _M, _alpha) = policy.predict(u[self.userMap[i]])
             w[self.userMap[i]], r[self.userMap[i]] = _w, _r
-            M += _M
-            alpha += _alpha
-        M = int(M/len(self.policies))
-        alpha = alpha/len(self.policies)
+            M_list.append(_M)
+            alpha_list.append(_alpha)
+        M = int(np.mean(M_list))
+        alpha = np.mean(alpha_list)
         return w.astype(int), r, M, alpha
     
     def _recordResults(self, reward, w, r, M, alpha, u, u_next, u_predicted, u_next_predicted):

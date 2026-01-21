@@ -83,6 +83,48 @@ def getEnvConfig(configIdx):
             'sub_agents_idx': [[2,2]],
             'user_map': [[0,1,2,3], [4,5,6,7]],
         }
+    elif configIdx == 6:
+        return {
+            'EnvType': 'HYBRID',
+            'N_user': 20,
+            'LEN_window': 20,
+            'N_aggregation': 4,
+            'dataflow': 'thumb_fr',
+            'randomSeed': 999,
+            'r_bar': 4,
+            'B': 200,
+            'sigma_list': [0.7, 0.75, 0.8, 0.85, 0.9],
+            'sub_agents_idx': [[0,0,0,0,0]],
+            'user_map': [[0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15], [16,17,18,19]],
+        }
+    elif configIdx == 7:
+        return {
+            'EnvType': 'HYBRID',
+            'N_user': 20,
+            'LEN_window': 20,
+            'N_aggregation': 4,
+            'dataflow': 'thumb_fr',
+            'randomSeed': 999,
+            'r_bar': 4,
+            'B': 200,
+            'sigma_list': [0.7, 0.75, 0.8, 0.85, 0.9],
+            'sub_agents_idx': [[1,1,1,1,1]],
+            'user_map': [[0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15], [16,17,18,19]],
+        }
+    elif configIdx == 8:
+        return {
+            'EnvType': 'HYBRID',
+            'N_user': 20,
+            'LEN_window': 20,
+            'N_aggregation': 4,
+            'dataflow': 'thumb_fr',
+            'randomSeed': 999,
+            'r_bar': 4,
+            'B': 200,
+            'sigma_list': [0.7, 0.75, 0.8, 0.85, 0.9],
+            'sub_agents_idx': [[2,2,2,2,2]],
+            'user_map': [[0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15], [16,17,18,19]],
+        }
     else:
         raise ValueError(f"Invalid configIdx: {configIdx}")
 
