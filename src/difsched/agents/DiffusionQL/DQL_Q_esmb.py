@@ -92,7 +92,9 @@ class DQL_Q_esmb():
         with torch.no_grad():
             if self.max_q_backup:
                 next_state_rpt = torch.repeat_interleave(s_next, repeats=10, dim=0)
-                next_action_rpt = self.actor_target.target.sample_DDIM(next_state_rpt, eta=self.q_sample_eta).clamp(-self.abs_action_max, self.abs_action_max)
+                next_action_rpt = self.actor_target.target.sample_DDIM(
+                    next_state_rpt, eta=np.random.uniform(0.1, 1.0) * self.q_sample_eta
+                ).clamp(-self.abs_action_max, self.abs_action_max)
                 q_next_rpt = self.critic_target.target.q_min(next_state_rpt, next_action_rpt)
                 q_next = q_next_rpt.view(s_next.size(0), 10, -1).max(dim=1)[0]
             else:

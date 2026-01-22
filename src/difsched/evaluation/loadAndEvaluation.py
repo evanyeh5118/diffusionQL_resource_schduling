@@ -33,7 +33,7 @@ def loadAndEvaluation(env, envInterface, dataset_expert, modelFolder, exp_idx_li
             action_dim=envInterface.action_dim, 
             **hyperparams
         )
-        print(f"Loading model {exp_idx}_best")
+        print(f"Loading model {exp_idx}_end")
         agent.load_model(modelFolder, f'{exp_idx}_best')
         agent_list.append(agent)
         
@@ -48,7 +48,6 @@ def loadAndEvaluation(env, envInterface, dataset_expert, modelFolder, exp_idx_li
             best_reward = np.mean(reward)
             best_model_idx = exp_idx
 
-    '''
     print(f"best_exp_idx: {best_model_idx}")
     agent = agent_list[best_model_idx]
 
@@ -66,9 +65,9 @@ def loadAndEvaluation(env, envInterface, dataset_expert, modelFolder, exp_idx_li
         env.selectMode(mode="test", type="data")
         reward_expert_sample = np.random.choice(rewards_expert, size=LEN_eval, replace=False)
         reward_dql_low_eta, _ = eval(agent, env, envInterface, LEN_eval=LEN_eval, obvMode="predicted", 
-                                sample_method="greedy", N_action_candidates=50, eta=0.01, verbose=True) 
+                                sample_method="greedy", N_action_candidates=200, eta=2.0, verbose=True) 
         reward_dql_high_eta, _ = eval(agent, env, envInterface, LEN_eval=LEN_eval, obvMode="predicted", 
-                                sample_method="greedy", N_action_candidates=50, eta=1.0, verbose=True) 
+                                sample_method="greedy", N_action_candidates=200, eta=1.0, verbose=True) 
         reward_expert_list.append(np.mean(reward_expert_sample))
         reward_dql_low_eta_list.append(reward_dql_low_eta)
         reward_dql_high_eta_list.append(reward_dql_high_eta)
@@ -84,4 +83,4 @@ def loadAndEvaluation(env, envInterface, dataset_expert, modelFolder, exp_idx_li
     print(f"Expert Reward: {mean_exp:.6f} ± {bound_exp:.6f}")
     print(f"DQL Reward (low eta): {mean_dql_low_eta:.6f} ± {bound_dql_low_eta:.6f}")
     print(f"DQL Reward (high eta): {mean_dql_high_eta:.6f} ± {bound_dql_high_eta:.6f}")
-    '''
+    

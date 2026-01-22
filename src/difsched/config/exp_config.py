@@ -21,7 +21,7 @@ def getExpConfig(configIdx):
             'dataflow': 'thumb_fr',
             'randomSeed': 999,
             'r_bar': 4,
-            'B': 100,
+            'B': 200,
             'sigma_list': [0.7, 0.75, 0.8, 0.85, 0.9],
             'offline_dataset_idxs': [6,7,8],
         }
