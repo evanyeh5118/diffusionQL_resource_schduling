@@ -6,21 +6,17 @@ from .Helpers.Simulators import SimulatorType1, SimulatorType2
 from .Helpers.TrafficGenerator import TrafficGenerator
 
 def createEnv(envParams, trafficDataParentPath):    
-    '''
-    with open(f'{trafficDataParentPath}/trafficData_{envParams["dataflow"]}_LenWindow{envParams["LEN_window"]}.pkl', 'rb') as f:
-        trafficData = pickle.load(f)
-    trafficGenerator = TrafficGenerator(envParams)
-    trafficGenerator.registerDataset(
-        trafficData['trafficSource_train_actual'], trafficData['trafficSource_test_actual'],
-        trafficData['trafficTarget_train_predicted'], trafficData['trafficTarget_test_predicted']
-    )
-    '''
-    #with open(f'{trafficDataParentPath}/trafficData_{envParams["dataflow"]}_LenWindow{envParams["LEN_window"]}.pkl', 'rb') as f:
-    #    trafficData = pickle.load(f)
-    with open(f'{trafficDataParentPath}/combined_flows_forward_1ms_20_train_predictions.pkl', 'rb') as f:
+    # ================== Load dataset ==================
+    dataflow = envParams['dataflow']
+    with open(f'{trafficDataParentPath}/{dataflow}_train.pkl', 'rb') as f:
         trainData = pickle.load(f)
-    with open(f'{trafficDataParentPath}/combined_flows_forward_1ms_20_test_predictions.pkl', 'rb') as f:
+    with open(f'{trafficDataParentPath}/{dataflow}_test.pkl', 'rb') as f:
         testData = pickle.load(f)
+    trainData['actual'] = np.where(trainData['actual'] >= envParams['LEN_window'], envParams['LEN_window'], trainData['actual'])
+    testData['actual'] = np.where(testData['actual'] >= envParams['LEN_window'], envParams['LEN_window'], testData['actual'])
+    trainData['predicted'] = np.where(trainData['predicted'] >= envParams['LEN_window'], envParams['LEN_window'], trainData['predicted'])
+    testData['predicted'] = np.where(testData['predicted'] >= envParams['LEN_window'], envParams['LEN_window'], testData['predicted'])
+    # ================== Register dataset ==================
     trafficGenerator = TrafficGenerator(envParams)
     trafficGenerator.registerDataset(
         np.array(trainData['actual']).astype(int), np.array(testData['actual']).astype(int),
